@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Will You Be My Valentine? 💖</title>
+
+<style>
+* { box-sizing: border-box; font-family: Poppins, sans-serif; }
+
+body {
+  margin: 0;
+  height: 100vh;
+  background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.question {
+  background: white;
+  padding: 40px 30px;
+  border-radius: 24px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+  width: 90%;
+  max-width: 320px;
+}
+
+h1 { color: #ff4d6d; }
+
+button {
+  padding: 12px 22px;
+  border: none;
+  border-radius: 30px;
+  font-size: 1rem;
+  margin: 8px;
+  cursor: pointer;
+}
+
+#yesBtn { background: #ff4d6d; color: white; }
+#noBtn { background: #f1f1f1; color: #555; }
+
+.message {
+  margin-top: 15px;
+  color: #ff4d6d;
+  min-height: 24px;
+}
+
+.celebration {
+  display: none;
+  position: absolute;
+  inset: 0;
+  background: black;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  color: white;
+  text-align: center;
+}
+
+.celebration img {
+  width: 90vw;
+  max-width: 420px;
+  border-radius: 25px;
+  margin-top: 20px;
+  box-shadow: 0 15px 40px rgba(255,77,109,0.7);
+}
+
+.heart {
+  position: absolute;
+  animation: floatUp 6s linear infinite;
+}
+
+@keyframes floatUp {
+  from { transform: translateY(100vh); opacity: 1; }
+  to { transform: translateY(-10vh); opacity: 0; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- 🎵 Intro song (plays only after NO click) -->
+<audio id="introSong" loop>
+  <source src="intro.mp3" type="audio/mpeg">
+</audio>
+
+<!-- 🎙️ Voice note -->
+<audio id="voiceNote">
+  <source src="voice-note.aac" type="audio/aac">
+</audio>
+
+<!-- ❤️ Love song -->
+<audio id="loveSong" loop>
+  <source src="song1.mpeg" type="audio/mpeg">
+</audio>
+
+<!-- First Page -->
+<div class="question" id="questionBox">
+  <h1>Will you be my Valentine? 💘</h1>
+  <button id="yesBtn">Yes 💖</button>
+  <button id="noBtn">No 🙂</button>
+  <div class="message" id="noMessage"></div>
+</div>
+
+<!-- Are You Sure Page -->
+<div class="celebration" id="sureBox">
+  <h2>Are you really sure? 🥺</h2>
+  <p style="max-width:260px;color:#ffd1dc;">
+    Even after all this… you still want to say no? 💔<br>
+    Think one last time 🫶
+  </p>
+  <button id="finalYes" style="background:#ff4d6d;color:white;">
+    Okay Yes 💖
+  </button>
+</div>
+
+<!-- Love Page -->
+<div class="celebration" id="celebrationBox">
+  <h2 style="color:#ff4d6d;">I love you ❤️</h2>
+  <img src="your-photo.jpg" alt="My Love">
+</div>
+
+<script>
+const noTexts = [
+  "Think again 🥺",
+  "Are you really sure? 💔",
+  "My heart is waiting... 🫶"
+];
+
+let i = 0;
+
+const noBtn = document.getElementById("noBtn");
+const yesBtn = document.getElementById("yesBtn");
+const finalYes = document.getElementById("finalYes");
+
+const noMessage = document.getElementById("noMessage");
+const questionBox = document.getElementById("questionBox");
+const sureBox = document.getElementById("sureBox");
+const celebrationBox = document.getElementById("celebrationBox");
+
+const introSong = document.getElementById("introSong");
+const voiceNote = document.getElementById("voiceNote");
+const loveSong = document.getElementById("loveSong");
+
+/* NO button */
+noBtn.onclick = () => {
+  if (introSong.paused) introSong.play();
+
+  if (i < noTexts.length) {
+    noMessage.textContent = noTexts[i++];
+  } else {
+    questionBox.style.display = "none";
+    sureBox.style.display = "flex";
+  }
+};
+
+/* YES buttons */
+yesBtn.onclick = openLove;
+finalYes.onclick = openLove;
+
+function openLove() {
+  introSong.pause();
+  introSong.currentTime = 0;
+
+  questionBox.style.display = "none";
+  sureBox.style.display = "none";
+  celebrationBox.style.display = "flex";
+
+  voiceNote.currentTime = 0;
+  voiceNote.play();
+
+  voiceNote.onended = () => {
+    loveSong.currentTime = 0;
+    loveSong.play();
+  };
+
+  startHearts();
+}
+
+/* Hearts animation */
+function startHearts() {
+  setInterval(() => {
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerHTML = "❤️";
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.fontSize = Math.random() * 20 + 12 + "px";
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 6000);
+  }, 300);
+}
+</script>
+
+</body>
+</html>
